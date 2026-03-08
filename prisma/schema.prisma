@@ -1,0 +1,146 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  pseudo        String         @unique
+  email         String         @unique
+  password      String
+  ffid          String?
+  avatar        String?
+  role          Role           @default(USER)  // ← ajouté
+  rank          Int            @default(0)
+  points        Int            @default(0)
+  wins          Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  registrations Registration[]
+  notifications Notification[]
+  matchResults  MatchResult[]
+}
+
+model Tournament {
+  id                    Int            @id @default(autoincrement())
+  title                 String
+  description           String?
+  game_mode             String
+  max_players           Int
+  current_players       Int            @default(0)
+  entry_fee             Int            @default(0)
+  prize_pool            Int
+  status                TournamentStatus @default(SOON)
+  start_at              DateTime
+  registration_deadline DateTime
+  featured              Boolean        @default(false)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  registrations         Registration[]
+  matches       Match[]
+}
+
+model Registration {
+  id            Int        @id @default(autoincrement())
+  slot          Int
+  userId        Int
+  tournamentId  Int
+  createdAt     DateTime   @default(now())
+
+  user          User       @relation(fields: [userId], references: [id])
+  tournament    Tournament @relation(fields: [tournamentId], references: [id])
+
+  @@unique([userId, tournamentId])
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  title     String
+  body      String
+  type      NotificationType @default(INFO)
+  read      Boolean          @default(false)
+  userId    Int
+  createdAt DateTime         @default(now())
+
+  user      User             @relation(fields: [userId], references: [id])
+}
+
+enum TournamentStatus {
+  OPEN
+  SOON
+  FULL
+  ONGOING
+  FINISHED
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  DANGER
+}
+
+/* ══════════════════════════════════════════
+   AJOUTER À LA FIN DE schema.prisma
+══════════════════════════════════════════ */
+
+enum MatchStatus {
+  PENDING   // pas encore commencé
+  LIVE      // en cours
+  FINISHED  // terminé
+}
+
+model Match {
+  id            Int          @id @default(autoincrement())
+  tournamentId  Int
+  round         Int          // numéro de manche — 1, 2, 3...
+  map           String       // ex: "Bermuda", "Kalahari", "Purgatory"
+  room_id       String?      // ID de la room Free Fire
+  room_password String?      // mot de passe de la room
+  status        MatchStatus  @default(PENDING)
+  scheduled_at  DateTime     // heure prévue du match
+  started_at    DateTime?    // heure réelle de début
+  finished_at   DateTime?    // heure réelle de fin
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  tournament    Tournament   @relation(fields: [tournamentId], references: [id])
+  results       MatchResult[]
+
+  @@unique([tournamentId, round]) // une seule manche X par tournoi
+}
+
+model MatchResult {
+  id          Int      @id @default(autoincrement())
+  matchId     Int
+  userId      Int
+  placement   Int      // classement — 1er, 2ème...
+  kills       Int      @default(0)
+  points      Int      @default(0) // calculé selon placement + kills
+  createdAt   DateTime @default(now())
+
+  match       Match    @relation(fields: [matchId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@unique([matchId, userId])     // un seul résultat par joueur par match
+  @@unique([matchId, placement])  // un seul joueur par placement par match
+}
