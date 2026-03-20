@@ -27,34 +27,39 @@ export class TournamentsController {
 
   /* ══════════════════════════════════════════
      GET /api/tournaments/active
-     Public — pas besoin d'être connecté
   ══════════════════════════════════════════ */
   @Get('active')
-  @ApiOperation({
-    summary: 'Tournoi actif',
-    description: 'Retourne le tournoi actuellement ouvert ou à venir',
-  })
+  @ApiOperation({ summary: 'Tournoi actif', description: 'Retourne le tournoi actif ou terminé le plus récent' })
   @ApiResponse({ status: 200, description: 'Tournoi récupéré', type: TournamentResponseDto })
-  @ApiResponse({ status: 404, description: 'Aucun tournoi actif' })
+  @ApiResponse({ status: 404, description: 'Aucun tournoi' })
   async getActive() {
     return this.tournamentsService.getActive();
   }
 
   /* ══════════════════════════════════════════
+     GET /api/tournaments/:id/ranking
+     Public — classement d'un tournoi
+  ══════════════════════════════════════════ */
+  @Get(':id/ranking')
+  @ApiOperation({ summary: 'Classement public d\'un tournoi' })
+  @ApiParam({ name: 'id', description: 'ID du tournoi', example: 1 })
+  @ApiResponse({ status: 200, description: 'Classement récupéré' })
+  @ApiResponse({ status: 404, description: 'Tournoi introuvable' })
+  async getRanking(@Param('id', ParseIntPipe) id: number) {
+    return this.tournamentsService.getRanking(id);
+  }
+
+  /* ══════════════════════════════════════════
      PATCH /api/tournaments/:id/register
-     Connecté requis — inscrit le user
   ══════════════════════════════════════════ */
   @Patch(':id/register')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
-  @ApiOperation({
-    summary: 'S\'inscrire au tournoi',
-    description: 'Inscrit le user connecté et incrémente current_players',
-  })
+  @ApiOperation({ summary: "S'inscrire au tournoi" })
   @ApiParam({ name: 'id', description: 'ID du tournoi', example: 1 })
   @ApiResponse({ status: 200, description: 'Inscription confirmée' })
-  @ApiResponse({ status: 400, description: 'Inscriptions fermées / tournoi complet / deadline passée' })
+  @ApiResponse({ status: 400, description: 'Inscriptions fermées / complet / deadline passée' })
   @ApiResponse({ status: 401, description: 'Non authentifié' })
   @ApiResponse({ status: 404, description: 'Tournoi introuvable' })
   @ApiResponse({ status: 409, description: 'Déjà inscrit' })

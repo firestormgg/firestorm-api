@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { validate } from './config/Env.config';
 import { PrismaModule } from './prisma/prisma.module';
 import { MatchModule } from './match/match.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { MatchModule } from './match/match.module';
       validate,            // valide les variables au démarrage
     }),
     PrismaModule,
-    MatchModule,],
+    MatchModule,
+    AdminModule,],
   controllers: [AppController],
   providers: [AppService],
 })

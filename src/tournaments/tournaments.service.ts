@@ -13,14 +13,17 @@ export class TournamentsService {
 
   /* ══════════════════════════════════════════
      GET TOURNOI ACTIF
-     Retourne le premier tournoi avec status
-     OPEN ou SOON — celui que le front affiche
   ══════════════════════════════════════════ */
   async getActive() {
     const tournament = await this.prisma.tournament.findFirst({
       where: {
         status: {
-          in: [TournamentStatus.OPEN, TournamentStatus.SOON, TournamentStatus.ONGOING],
+          in: [
+            TournamentStatus.OPEN,
+            TournamentStatus.SOON,
+            TournamentStatus.ONGOING,
+            TournamentStatus.FINISHED,
+          ],
         },
       },
       orderBy: { start_at: 'asc' },
@@ -34,20 +37,39 @@ export class TournamentsService {
   }
 
   /* ══════════════════════════════════════════
+     GET TOURNOI PAR ID
+  ══════════════════════════════════════════ */
+  async findById(id: number) {
+    const tournament = await this.prisma.tournament.findUnique({ where: { id } });
+    if (!tournament) throw new NotFoundException('Tournoi introuvable');
+    return tournament;
+  }
+
+  /* ══════════════════════════════════════════
+     GET CLASSEMENT PUBLIC
+  ══════════════════════════════════════════ */
+  async getRanking(tournamentId: number) {
+    await this.findById(tournamentId);
+
+    return this.prisma.tournamentRanking.findMany({
+      where:   { tournamentId },
+      orderBy: { position: 'asc' },
+      include: {
+        user: { select: { id: true, pseudo: true, avatar: true, country: true } },
+      },
+    });
+  }
+
+  /* ══════════════════════════════════════════
      INSCRIRE UN JOUEUR
-     Vérifie toutes les conditions puis
-     incrémente current_players
   ══════════════════════════════════════════ */
   async register(tournamentId: number, userId: number) {
     const tournament = await this.prisma.tournament.findUnique({
       where: { id: tournamentId },
     });
 
-    if (!tournament) {
-      throw new NotFoundException('Tournoi introuvable');
-    }
+    if (!tournament) throw new NotFoundException('Tournoi introuvable');
 
-    // Vérifications
     if (tournament.status !== TournamentStatus.OPEN) {
       throw new BadRequestException('Les inscriptions ne sont pas ouvertes');
     }
@@ -57,41 +79,25 @@ export class TournamentsService {
     }
 
     if (new Date(tournament.registration_deadline) < new Date()) {
-      throw new BadRequestException('La deadline d\'inscription est passée');
+      throw new BadRequestException("La deadline d'inscription est passée");
     }
 
-    // Vérifie si déjà inscrit
     const existing = await this.prisma.registration.findUnique({
-      where: {
-        userId_tournamentId: {
-          userId,
-          tournamentId,
-        },
-      },
+      where: { userId_tournamentId: { userId, tournamentId } },
     });
 
-    if (existing) {
-      throw new ConflictException('Tu es déjà inscrit à ce tournoi');
-    }
+    if (existing) throw new ConflictException('Tu es déjà inscrit à ce tournoi');
 
-    // Numéro de slot
     const slot = tournament.current_players + 1;
 
-    // Transaction — inscription + incrément + status si complet
     const [registration] = await this.prisma.$transaction([
-
-      // 1. Créer l'inscription
       this.prisma.registration.create({
         data: { userId, tournamentId, slot },
       }),
-
-      // 2. Incrémenter current_players
       this.prisma.tournament.update({
         where: { id: tournamentId },
         data:  { current_players: { increment: 1 } },
       }),
-
-      // 3. Passer status à FULL si complet
       ...(slot >= tournament.max_players
         ? [this.prisma.tournament.update({
             where: { id: tournamentId },
@@ -99,8 +105,6 @@ export class TournamentsService {
           })]
         : []
       ),
-
-      // 4. Créer une notification pour le user
       this.prisma.notification.create({
         data: {
           userId,
@@ -112,7 +116,7 @@ export class TournamentsService {
     ]);
 
     return {
-      message:  'Inscription confirmée !',
+      message:    'Inscription confirmée !',
       slot,
       tournament: await this.getActive(),
     };

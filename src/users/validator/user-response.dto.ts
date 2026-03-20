@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Role } from 'generated/prisma/enums';
 
 /* ══════════════════════════════════════════
    USER RESPONSE DTO
@@ -20,6 +21,9 @@ export class UserResponseDto {
 
   @ApiPropertyOptional({ example: 'https://cdn.firestorm.gg/avatars/killswitch.jpg' })
   avatar: string | null;
+
+  @ApiProperty({ enum: Role, example: Role.USER })
+  role: Role;
 
   @ApiProperty({ example: 47 })
   rank: number;

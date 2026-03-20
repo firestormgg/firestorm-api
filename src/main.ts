@@ -19,9 +19,9 @@ async function bootstrap() {
      CORS
      Autorise les requêtes venant du front Next.js
   ══════════════════════════════════════════ */
-  app.enableCors({
+  app.enableCors({ 
     origin: [
-      'http://localhost:3001',        // Next.js en dev
+      'http://localhost:3000',        // Next.js en dev
       process.env.FRONTEND_URL,       // Next.js en prod
     ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

@@ -1,7 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
-  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -13,29 +12,28 @@ import {
 export class CreateUserDto {
   @ApiProperty({
     description: 'Pseudo unique du joueur',
-    example: 'KillSwitch_FF',
-    minLength: 3,
-    maxLength: 20,
+    example:     'KillSwitch_FF',
+    minLength:   3,
+    maxLength:   20,
   })
   @IsString()
   @IsNotEmpty()
-  @MinLength(3, { message: 'Le pseudo doit contenir au moins 3 caractères' })
+  @MinLength(3,  { message: 'Le pseudo doit contenir au moins 3 caractères' })
   @MaxLength(20, { message: 'Le pseudo ne peut pas dépasser 20 caractères' })
   pseudo: string;
 
   @ApiProperty({
     description: 'Adresse email du joueur',
-    example: 'killswitch@firestorm.gg',
+    example:     'killswitch@firestorm.gg',
   })
   @IsEmail({}, { message: 'Adresse email invalide' })
   @IsNotEmpty()
   email: string;
 
   @ApiProperty({
-    description:
-      'Mot de passe — min 8 caractères, au moins 1 majuscule, 1 chiffre',
-    example: 'FireStorm123',
-    minLength: 8,
+    description: 'Mot de passe — min 8 caractères, au moins 1 majuscule, 1 chiffre',
+    example:     'FireStorm123',
+    minLength:   8,
   })
   @IsString()
   @IsNotEmpty()
@@ -47,7 +45,7 @@ export class CreateUserDto {
 
   @ApiPropertyOptional({
     description: 'ID Free Fire du joueur',
-    example: '12345678',
+    example:     '12345678',
   })
   @IsString()
   @IsOptional()
@@ -55,11 +53,17 @@ export class CreateUserDto {
 
   @ApiPropertyOptional({
     description: 'URL de la photo de profil',
-    example: 'https://cdn.firestorm.gg/avatars/killswitch.jpg',
+    example:     'https://cdn.firestorm.gg/avatars/killswitch.jpg',
   })
   @IsString()
   @IsOptional()
   avatar?: string;
 
-
+  @ApiPropertyOptional({
+    description: 'Pays du joueur',
+    example:     'Côte d\'Ivoire',
+  })
+  @IsString()
+  @IsOptional()
+  country?: string;
 }

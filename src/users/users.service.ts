@@ -16,22 +16,17 @@ export class UsersService {
 
   /* ══════════════════════════════════════════
      CRÉER UN UTILISATEUR
-     Utilisé par AuthService lors du register
   ══════════════════════════════════════════ */
   async create(dto: CreateUserDto): Promise<Omit<User, 'password'>> {
     const existingEmail = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
-    if (existingEmail) {
-      throw new ConflictException('Cet email est déjà utilisé');
-    }
+    if (existingEmail) throw new ConflictException('Cet email est déjà utilisé');
 
     const existingPseudo = await this.prisma.user.findUnique({
       where: { pseudo: dto.pseudo },
     });
-    if (existingPseudo) {
-      throw new ConflictException('Ce pseudo est déjà pris');
-    }
+    if (existingPseudo) throw new ConflictException('Ce pseudo est déjà pris');
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
@@ -42,6 +37,7 @@ export class UsersService {
         password: hashedPassword,
         ffid:     dto.ffid,
         avatar:   dto.avatar,
+        country:  dto.country,
       },
     });
 
@@ -50,13 +46,11 @@ export class UsersService {
 
   /* ══════════════════════════════════════════
      TROUVER TOUS LES UTILISATEURS
-     Réservé à l'admin
   ══════════════════════════════════════════ */
   async findAll(): Promise<Omit<User, 'password'>[]> {
     const users = await this.prisma.user.findMany({
       orderBy: { createdAt: 'desc' },
     });
-
     return users.map((user) => this.exclude(user, ['password']));
   }
 
@@ -64,36 +58,23 @@ export class UsersService {
      TROUVER UN USER PAR ID
   ══════════════════════════════════════════ */
   async findOne(id: number): Promise<Omit<User, 'password'>> {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-    });
-
-    if (!user) {
-      throw new NotFoundException(`Utilisateur #${id} introuvable`);
-    }
-
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException(`Utilisateur #${id} introuvable`);
     return this.exclude(user, ['password']);
   }
 
   /* ══════════════════════════════════════════
      TROUVER UN USER PAR EMAIL
-     Retourne le password pour AuthService
-     qui en a besoin pour bcrypt.compare()
   ══════════════════════════════════════════ */
   async findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: { email },
-    });
+    return this.prisma.user.findUnique({ where: { email } });
   }
 
   /* ══════════════════════════════════════════
      TROUVER UN USER PAR PSEUDO
   ══════════════════════════════════════════ */
   async findByPseudo(pseudo: string): Promise<Omit<User, 'password'> | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { pseudo },
-    });
-
+    const user = await this.prisma.user.findUnique({ where: { pseudo } });
     if (!user) return null;
     return this.exclude(user, ['password']);
   }
@@ -101,19 +82,12 @@ export class UsersService {
   /* ══════════════════════════════════════════
      METTRE À JOUR UN USER
   ══════════════════════════════════════════ */
-  async update(
-    id: number,
-    dto: UpdateUserDto,
-  ): Promise<Omit<User, 'password'>> {
+  async update(id: number, dto: UpdateUserDto): Promise<Omit<User, 'password'>> {
     await this.findOne(id);
 
     if (dto.pseudo) {
-      const existing = await this.prisma.user.findUnique({
-        where: { pseudo: dto.pseudo },
-      });
-      if (existing && existing.id !== id) {
-        throw new ConflictException('Ce pseudo est déjà pris');
-      }
+      const existing = await this.prisma.user.findUnique({ where: { pseudo: dto.pseudo } });
+      if (existing && existing.id !== id) throw new ConflictException('Ce pseudo est déjà pris');
     }
 
     const data: any = { ...dto };
@@ -121,11 +95,7 @@ export class UsersService {
       data.password = await bcrypt.hash(dto.password, 10);
     }
 
-    const updated = await this.prisma.user.update({
-      where: { id },
-      data,
-    });
-
+    const updated = await this.prisma.user.update({ where: { id }, data });
     return this.exclude(updated, ['password']);
   }
 
@@ -134,17 +104,12 @@ export class UsersService {
   ══════════════════════════════════════════ */
   async remove(id: number): Promise<{ message: string }> {
     await this.findOne(id);
-
-    await this.prisma.user.delete({
-      where: { id },
-    });
-
+    await this.prisma.user.delete({ where: { id } });
     return { message: `Utilisateur #${id} supprimé avec succès` };
   }
 
   /* ══════════════════════════════════════════
      TROUVER UN USER AVEC SES INSCRIPTIONS
-     Utile pour la page "Mes tournois"
   ══════════════════════════════════════════ */
   async findWithRegistrations(id: number) {
     const user = await this.prisma.user.findUnique({
@@ -156,25 +121,19 @@ export class UsersService {
         },
       },
     });
-
-    if (!user) {
-      throw new NotFoundException(`Utilisateur #${id} introuvable`);
-    }
-
+    if (!user) throw new NotFoundException(`Utilisateur #${id} introuvable`);
     const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 
   /* ══════════════════════════════════════════
      METTRE À JOUR LES STATS
-     Appelé après chaque tournoi terminé
   ══════════════════════════════════════════ */
   async updateStats(
     id: number,
     stats: { rank?: number; points?: number; wins?: number },
   ): Promise<Omit<User, 'password'>> {
     await this.findOne(id);
-
     const updated = await this.prisma.user.update({
       where: { id },
       data: {
@@ -183,7 +142,6 @@ export class UsersService {
         ...(stats.wins   !== undefined && { wins:   stats.wins }),
       },
     });
-
     return this.exclude(updated, ['password']);
   }
 
@@ -201,34 +159,21 @@ export class UsersService {
 
     const { error } = await supabase.storage
       .from('avatar')
-      .upload(filePath, file.buffer, {
-        contentType: file.mimetype,
-        upsert:      true,
-      });
+      .upload(filePath, file.buffer, { contentType: file.mimetype, upsert: true });
 
     if (error) throw new Error(error.message);
 
-    const { data } = supabase.storage
-      .from('avatar')
-      .getPublicUrl(filePath);
-
+    const { data } = supabase.storage.from('avatar').getPublicUrl(filePath);
     const avatarUrl = data.publicUrl;
 
-    await this.prisma.user.update({
-      where: { id: userId },
-      data:  { avatar: avatarUrl },
-    });
-
+    await this.prisma.user.update({ where: { id: userId }, data: { avatar: avatarUrl } });
     return { avatar: avatarUrl };
   }
 
   /* ══════════════════════════════════════════
      HELPER PRIVÉ — Exclure des champs
   ══════════════════════════════════════════ */
-  private exclude<T extends object, K extends keyof T>(
-    obj: T,
-    keys: K[],
-  ): Omit<T, K> {
+  private exclude<T extends object, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
     return Object.fromEntries(
       Object.entries(obj).filter(([key]) => !keys.includes(key as K)),
     ) as Omit<T, K>;
