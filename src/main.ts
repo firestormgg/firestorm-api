@@ -20,9 +20,7 @@ async function bootstrap() {
      Autorise les requêtes venant du front Next.js
   ══════════════════════════════════════════ */
   app.enableCors({ 
-    origin: [
-      '*', 
-    ],
+    origin: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,                // autorise les cookies
@@ -60,38 +58,42 @@ async function bootstrap() {
      SWAGGER — Documentation auto
      Accessible sur http://localhost:3000/docs
   ══════════════════════════════════════════ */
-  const config = new DocumentBuilder()
-    .setTitle('FIRE STORM API')
-    .setDescription('API officielle de la plateforme FIRE STORM — Tournois Free Fire')
-    .setVersion('1.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        description: 'Entre ton JWT token ici',
-      },
-      'access-token',               // nom du schéma — utilisé dans les decorators
-    )
-    .addTag('Auth',          'Login, Register, Logout')
-    .addTag('Tournaments',   'Gestion des tournois')
-    .addTag('Registrations', 'Inscriptions aux tournois')
-    .addTag('Notifications', 'Notifications utilisateur')
-    .addTag('Users',         'Profil utilisateur')
-    .build();
+  if (process.env.NODE_ENV !== 'production') {
+  // swagger ici
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document, {
-    swaggerOptions: {
-      persistAuthorization: true,   // garde le token entre les refreshs de page
-    },
-  });
+    const config = new DocumentBuilder()
+      .setTitle('FIRE STORM API')
+      .setDescription('API officielle de la plateforme FIRE STORM — Tournois Free Fire')
+      .setVersion('1.0')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Entre ton JWT token ici',
+        },
+        'access-token',               // nom du schéma — utilisé dans les decorators
+      )
+      .addTag('Auth',          'Login, Register, Logout')
+      .addTag('Tournaments',   'Gestion des tournois')
+      .addTag('Registrations', 'Inscriptions aux tournois')
+      .addTag('Notifications', 'Notifications utilisateur')
+      .addTag('Users',         'Profil utilisateur')
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('docs', app, document, {
+      swaggerOptions: {
+        persistAuthorization: true,   // garde le token entre les refreshs de page
+      },
+    });
+  }
 
   /* ══════════════════════════════════════════
      DÉMARRAGE
   ══════════════════════════════════════════ */
   const port = process.env.PORT ?? 3000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   console.log(`
 🔥 ════════════════════════════════════════
