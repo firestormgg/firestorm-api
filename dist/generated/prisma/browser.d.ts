@@ -1,0 +1,11 @@
+import * as Prisma from './internal/prismaNamespaceBrowser.js';
+export { Prisma };
+export * as $Enums from './enums.js';
+export * from './enums.js';
+export type User = Prisma.UserModel;
+export type Tournament = Prisma.TournamentModel;
+export type Registration = Prisma.RegistrationModel;
+export type Notification = Prisma.NotificationModel;
+export type Match = Prisma.MatchModel;
+export type MatchResult = Prisma.MatchResultModel;
+export type TournamentRanking = Prisma.TournamentRankingModel;

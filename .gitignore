@@ -1,5 +1,5 @@
 # compiled output
-/dist
+# /dist        <-- commenté pour permettre le push du dist
 /node_modules
 /build
 
