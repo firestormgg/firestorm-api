@@ -14,49 +14,49 @@ export declare class AdminService {
                 registrations: number;
             };
         } & {
+            status: import("../../generated/prisma/enums").TournamentStatus;
+            description: string | null;
+            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
-            title: string;
-            description: string | null;
             game_mode: string;
             max_players: number;
             current_players: number;
             entry_fee: number;
             prize_pool: number;
-            status: import("../../generated/prisma/enums").TournamentStatus;
             start_at: Date;
             registration_deadline: Date;
             featured: boolean;
         }) | null;
         recentRegistrations: ({
             user: {
-                id: number;
                 pseudo: string;
                 email: string;
                 password: string;
                 ffid: string | null;
                 avatar: string | null;
+                country: string | null;
+                id: number;
                 role: import("../../generated/prisma/enums").Role;
                 rank: number;
                 points: number;
-                country: string | null;
                 wins: number;
                 createdAt: Date;
                 updatedAt: Date;
             };
             tournament: {
+                status: import("../../generated/prisma/enums").TournamentStatus;
+                description: string | null;
+                title: string;
                 id: number;
                 createdAt: Date;
                 updatedAt: Date;
-                title: string;
-                description: string | null;
                 game_mode: string;
                 max_players: number;
                 current_players: number;
                 entry_fee: number;
                 prize_pool: number;
-                status: import("../../generated/prisma/enums").TournamentStatus;
                 start_at: Date;
                 registration_deadline: Date;
                 featured: boolean;
@@ -76,61 +76,61 @@ export declare class AdminService {
             registrations: number;
         };
     } & {
+        status: import("../../generated/prisma/enums").TournamentStatus;
+        description: string | null;
+        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        title: string;
-        description: string | null;
         game_mode: string;
         max_players: number;
         current_players: number;
         entry_fee: number;
         prize_pool: number;
-        status: import("../../generated/prisma/enums").TournamentStatus;
         start_at: Date;
         registration_deadline: Date;
         featured: boolean;
     })[]>;
     createTournament(dto: CreateTournamentDto): Promise<{
+        status: import("../../generated/prisma/enums").TournamentStatus;
+        description: string | null;
+        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        title: string;
-        description: string | null;
         game_mode: string;
         max_players: number;
         current_players: number;
         entry_fee: number;
         prize_pool: number;
-        status: import("../../generated/prisma/enums").TournamentStatus;
         start_at: Date;
         registration_deadline: Date;
         featured: boolean;
     }>;
     updateTournamentStatus(id: number, status: string): Promise<{
+        status: import("../../generated/prisma/enums").TournamentStatus;
+        description: string | null;
+        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        title: string;
-        description: string | null;
         game_mode: string;
         max_players: number;
         current_players: number;
         entry_fee: number;
         prize_pool: number;
-        status: import("../../generated/prisma/enums").TournamentStatus;
         start_at: Date;
         registration_deadline: Date;
         featured: boolean;
     }>;
     getTournamentRegistrations(tournamentId: number): Promise<({
         user: {
-            id: number;
             pseudo: string;
             email: string;
             ffid: string | null;
             avatar: string | null;
             country: string | null;
+            id: number;
         };
     } & {
         id: number;
@@ -149,27 +149,27 @@ export declare class AdminService {
     getTournamentMatches(tournamentId: number): Promise<({
         results: ({
             user: {
-                id: number;
                 pseudo: string;
                 avatar: string | null;
+                id: number;
             };
         } & {
             id: number;
             points: number;
             createdAt: Date;
             userId: number;
-            matchId: number;
             placement: number;
             kills: number;
+            matchId: number;
         })[];
     } & {
+        status: import("../../generated/prisma/enums").MatchStatus;
+        map: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        status: import("../../generated/prisma/enums").MatchStatus;
         tournamentId: number;
         round: number;
-        map: string;
         room_id: string | null;
         room_password: string | null;
         scheduled_at: Date;
@@ -177,13 +177,13 @@ export declare class AdminService {
         finished_at: Date | null;
     })[]>;
     createMatch(dto: CreateMatchDto): Promise<{
+        status: import("../../generated/prisma/enums").MatchStatus;
+        map: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        status: import("../../generated/prisma/enums").MatchStatus;
         tournamentId: number;
         round: number;
-        map: string;
         room_id: string | null;
         room_password: string | null;
         scheduled_at: Date;
@@ -191,13 +191,13 @@ export declare class AdminService {
         finished_at: Date | null;
     }>;
     updateMatch(matchId: number, dto: UpdateMatchDto): Promise<{
+        status: import("../../generated/prisma/enums").MatchStatus;
+        map: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        status: import("../../generated/prisma/enums").MatchStatus;
         tournamentId: number;
         round: number;
-        map: string;
         room_id: string | null;
         room_password: string | null;
         scheduled_at: Date;
@@ -209,25 +209,25 @@ export declare class AdminService {
         points: number;
         createdAt: Date;
         userId: number;
-        matchId: number;
         placement: number;
         kills: number;
+        matchId: number;
     }[]>;
     getMatchResults(matchId: number): Promise<({
         user: {
-            id: number;
             pseudo: string;
             ffid: string | null;
             avatar: string | null;
+            id: number;
         };
     } & {
         id: number;
         points: number;
         createdAt: Date;
         userId: number;
-        matchId: number;
         placement: number;
         kills: number;
+        matchId: number;
     })[]>;
     broadcastNotification(tournamentId: number, title: string, body: string): Promise<{
         message: string;
@@ -237,10 +237,10 @@ export declare class AdminService {
     }>;
     getRanking(tournamentId: number): Promise<({
         user: {
-            id: number;
             pseudo: string;
             avatar: string | null;
             country: string | null;
+            id: number;
         };
     } & {
         id: number;

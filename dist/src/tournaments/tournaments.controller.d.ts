@@ -4,8 +4,6 @@ export declare class TournamentsController {
     constructor(tournamentsService: TournamentsService);
     getActive(): Promise<{
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         game_mode: string;
@@ -17,6 +15,8 @@ export declare class TournamentsController {
         start_at: Date;
         registration_deadline: Date;
         featured: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     getRanking(id: number): Promise<({
         user: {
@@ -29,8 +29,8 @@ export declare class TournamentsController {
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        userId: number;
         tournamentId: number;
+        userId: number;
         totalPoints: number;
         position: number;
     })[]>;
@@ -39,8 +39,6 @@ export declare class TournamentsController {
         slot: number;
         tournament: {
             id: number;
-            createdAt: Date;
-            updatedAt: Date;
             title: string;
             description: string | null;
             game_mode: string;
@@ -52,6 +50,8 @@ export declare class TournamentsController {
             start_at: Date;
             registration_deadline: Date;
             featured: boolean;
+            createdAt: Date;
+            updatedAt: Date;
         };
     }>;
 }

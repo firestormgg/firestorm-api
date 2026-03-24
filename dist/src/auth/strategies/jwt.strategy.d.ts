@@ -14,16 +14,16 @@ export declare class JwtStrategy extends JwtStrategy_base {
         email: string;
         role: string;
     }): Promise<Omit<{
-        id: number;
         pseudo: string;
         email: string;
         password: string;
         ffid: string | null;
         avatar: string | null;
+        country: string | null;
+        id: number;
         role: import("../../../generated/prisma/enums").Role;
         rank: number;
         points: number;
-        country: string | null;
         wins: number;
         createdAt: Date;
         updatedAt: Date;

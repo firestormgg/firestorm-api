@@ -3,21 +3,21 @@ export declare class NotificationsService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     findAllForUser(userId: number): Promise<{
+        type: import("../../generated/prisma/enums").NotificationType;
+        title: string;
         id: number;
         createdAt: Date;
-        title: string;
         userId: number;
         body: string;
-        type: import("../../generated/prisma/enums").NotificationType;
         read: boolean;
     }[]>;
     markAsRead(id: number, userId: number): Promise<{
+        type: import("../../generated/prisma/enums").NotificationType;
+        title: string;
         id: number;
         createdAt: Date;
-        title: string;
         userId: number;
         body: string;
-        type: import("../../generated/prisma/enums").NotificationType;
         read: boolean;
     }>;
     markAllAsRead(userId: number): Promise<{

@@ -7,15 +7,15 @@ export declare class AuthService {
     private readonly jwtService;
     constructor(usersService: UsersService, jwtService: JwtService);
     validateUser(email: string, password: string): Promise<{
-        id: number;
         pseudo: string;
         email: string;
         ffid: string | null;
         avatar: string | null;
+        country: string | null;
+        id: number;
         role: import("../../generated/prisma/enums").Role;
         rank: number;
         points: number;
-        country: string | null;
         wins: number;
         createdAt: Date;
         updatedAt: Date;
@@ -23,16 +23,16 @@ export declare class AuthService {
     register(dto: RegisterDto): Promise<AuthResponseDto>;
     login(user: any): Promise<AuthResponseDto>;
     me(userId: number): Promise<Omit<{
-        id: number;
         pseudo: string;
         email: string;
         password: string;
         ffid: string | null;
         avatar: string | null;
+        country: string | null;
+        id: number;
         role: import("../../generated/prisma/enums").Role;
         rank: number;
         points: number;
-        country: string | null;
         wins: number;
         createdAt: Date;
         updatedAt: Date;

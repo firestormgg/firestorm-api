@@ -5,8 +5,6 @@ export declare class TournamentsService {
     constructor(prisma: PrismaService);
     getActive(): Promise<{
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         game_mode: string;
@@ -18,11 +16,11 @@ export declare class TournamentsService {
         start_at: Date;
         registration_deadline: Date;
         featured: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     findById(id: number): Promise<{
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         game_mode: string;
@@ -34,6 +32,8 @@ export declare class TournamentsService {
         start_at: Date;
         registration_deadline: Date;
         featured: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     getRanking(tournamentId: number): Promise<({
         user: {
@@ -46,8 +46,8 @@ export declare class TournamentsService {
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        userId: number;
         tournamentId: number;
+        userId: number;
         totalPoints: number;
         position: number;
     })[]>;
@@ -56,8 +56,6 @@ export declare class TournamentsService {
         slot: number;
         tournament: {
             id: number;
-            createdAt: Date;
-            updatedAt: Date;
             title: string;
             description: string | null;
             game_mode: string;
@@ -69,6 +67,8 @@ export declare class TournamentsService {
             start_at: Date;
             registration_deadline: Date;
             featured: boolean;
+            createdAt: Date;
+            updatedAt: Date;
         };
     }>;
 }

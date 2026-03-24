@@ -6,17 +6,17 @@ export declare class UsersController {
     constructor(usersService: UsersService);
     getMyRegistrations(req: any): Promise<({
         tournament: {
+            status: import("generated/prisma/enums").TournamentStatus;
+            description: string | null;
+            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
-            title: string;
-            description: string | null;
             game_mode: string;
             max_players: number;
             current_players: number;
             entry_fee: number;
             prize_pool: number;
-            status: import("generated/prisma/enums").TournamentStatus;
             start_at: Date;
             registration_deadline: Date;
             featured: boolean;
@@ -33,16 +33,16 @@ export declare class UsersController {
         avatar: string;
     }>;
     getMe(req: any): Promise<Omit<{
-        id: number;
         pseudo: string;
         email: string;
         password: string;
         ffid: string | null;
         avatar: string | null;
+        country: string | null;
+        id: number;
         role: Role;
         rank: number;
         points: number;
-        country: string | null;
         wins: number;
         createdAt: Date;
         updatedAt: Date;
@@ -50,17 +50,17 @@ export declare class UsersController {
     getMyTournaments(req: any): Promise<{
         registrations: ({
             tournament: {
+                status: import("generated/prisma/enums").TournamentStatus;
+                description: string | null;
+                title: string;
                 id: number;
                 createdAt: Date;
                 updatedAt: Date;
-                title: string;
-                description: string | null;
                 game_mode: string;
                 max_players: number;
                 current_players: number;
                 entry_fee: number;
                 prize_pool: number;
-                status: import("generated/prisma/enums").TournamentStatus;
                 start_at: Date;
                 registration_deadline: Date;
                 featured: boolean;
@@ -73,30 +73,30 @@ export declare class UsersController {
             tournamentId: number;
             payment_status: string;
         })[];
-        id: number;
         pseudo: string;
         email: string;
         ffid: string | null;
         avatar: string | null;
+        country: string | null;
+        id: number;
         role: Role;
         rank: number;
         points: number;
-        country: string | null;
         wins: number;
         createdAt: Date;
         updatedAt: Date;
     }>;
     updateMe(req: any, dto: UpdateUserDto): Promise<Omit<{
-        id: number;
         pseudo: string;
         email: string;
         password: string;
         ffid: string | null;
         avatar: string | null;
+        country: string | null;
+        id: number;
         role: Role;
         rank: number;
         points: number;
-        country: string | null;
         wins: number;
         createdAt: Date;
         updatedAt: Date;
@@ -105,46 +105,46 @@ export declare class UsersController {
         message: string;
     }>;
     findAll(): Promise<Omit<{
-        id: number;
         pseudo: string;
         email: string;
         password: string;
         ffid: string | null;
         avatar: string | null;
+        country: string | null;
+        id: number;
         role: Role;
         rank: number;
         points: number;
-        country: string | null;
         wins: number;
         createdAt: Date;
         updatedAt: Date;
     }, "password">[]>;
     findOne(id: number): Promise<Omit<{
-        id: number;
         pseudo: string;
         email: string;
         password: string;
         ffid: string | null;
         avatar: string | null;
+        country: string | null;
+        id: number;
         role: Role;
         rank: number;
         points: number;
-        country: string | null;
         wins: number;
         createdAt: Date;
         updatedAt: Date;
     }, "password">>;
     update(id: number, dto: UpdateUserDto): Promise<Omit<{
-        id: number;
         pseudo: string;
         email: string;
         password: string;
         ffid: string | null;
         avatar: string | null;
+        country: string | null;
+        id: number;
         role: Role;
         rank: number;
         points: number;
-        country: string | null;
         wins: number;
         createdAt: Date;
         updatedAt: Date;
@@ -157,16 +157,16 @@ export declare class UsersController {
         points?: number;
         wins?: number;
     }): Promise<Omit<{
-        id: number;
         pseudo: string;
         email: string;
         password: string;
         ffid: string | null;
         avatar: string | null;
+        country: string | null;
+        id: number;
         role: Role;
         rank: number;
         points: number;
-        country: string | null;
         wins: number;
         createdAt: Date;
         updatedAt: Date;

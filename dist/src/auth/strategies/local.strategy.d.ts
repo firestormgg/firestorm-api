@@ -7,15 +7,15 @@ export declare class LocalStrategy extends LocalStrategy_base {
     private readonly authService;
     constructor(authService: AuthService);
     validate(email: string, password: string): Promise<{
-        id: number;
         pseudo: string;
         email: string;
         ffid: string | null;
         avatar: string | null;
+        country: string | null;
+        id: number;
         role: import("../../../generated/prisma/enums").Role;
         rank: number;
         points: number;
-        country: string | null;
         wins: number;
         createdAt: Date;
         updatedAt: Date;

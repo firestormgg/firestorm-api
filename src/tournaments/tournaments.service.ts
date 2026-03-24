@@ -108,15 +108,16 @@ export class TournamentsService {
       this.prisma.notification.create({
         data: {
           userId,
-          title: 'Inscription confirmée ✅',
-          body:  `Tu es inscrit au tournoi "${tournament.title}" — Slot #${slot}`,
-          type:  'SUCCESS',
-        },
+          title: "Demande d'inscription reçue 📝",
+          body: `Ta demande pour le tournoi "${tournament.title}" (Slot #${slot}) a bien été enregistrée. 
+                  Elle sera validée après paiement, dans un délai maximum de 24h.`,
+          type: "INFO",
+        }
       }),
     ]);
 
     return {
-      message:    'Inscription confirmée !',
+      message:    "Demande d'inscription reçue !",
       slot,
       tournament: await this.getActive(),
     };

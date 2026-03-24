@@ -3,24 +3,24 @@ export declare class NotificationsController {
     private readonly notificationsService;
     constructor(notificationsService: NotificationsService);
     findAll(req: any): Promise<{
+        type: import("../../generated/prisma/enums").NotificationType;
+        title: string;
         id: number;
         createdAt: Date;
-        title: string;
         userId: number;
         body: string;
-        type: import("../../generated/prisma/enums").NotificationType;
         read: boolean;
     }[]>;
     countUnread(req: any): Promise<{
         count: number;
     }>;
     markAsRead(id: number, req: any): Promise<{
+        type: import("../../generated/prisma/enums").NotificationType;
+        title: string;
         id: number;
         createdAt: Date;
-        title: string;
         userId: number;
         body: string;
-        type: import("../../generated/prisma/enums").NotificationType;
         read: boolean;
     }>;
     markAllAsRead(req: any): Promise<{

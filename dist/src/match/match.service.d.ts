@@ -3,13 +3,13 @@ export declare class MatchService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     getNext(): Promise<{
+        status: import("../../generated/prisma/enums").MatchStatus;
+        map: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        status: import("../../generated/prisma/enums").MatchStatus;
         tournamentId: number;
         round: number;
-        map: string;
         room_id: string | null;
         room_password: string | null;
         scheduled_at: Date;

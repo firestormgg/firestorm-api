@@ -17,17 +17,17 @@ export declare class UsersService {
     findWithRegistrations(id: number): Promise<{
         registrations: ({
             tournament: {
+                status: import("generated/prisma/client").TournamentStatus;
+                description: string | null;
+                title: string;
                 id: number;
                 createdAt: Date;
                 updatedAt: Date;
-                title: string;
-                description: string | null;
                 game_mode: string;
                 max_players: number;
                 current_players: number;
                 entry_fee: number;
                 prize_pool: number;
-                status: import("generated/prisma/client").TournamentStatus;
                 start_at: Date;
                 registration_deadline: Date;
                 featured: boolean;
@@ -40,15 +40,15 @@ export declare class UsersService {
             tournamentId: number;
             payment_status: string;
         })[];
-        id: number;
         pseudo: string;
         email: string;
         ffid: string | null;
         avatar: string | null;
+        country: string | null;
+        id: number;
         role: import("generated/prisma/client").Role;
         rank: number;
         points: number;
-        country: string | null;
         wins: number;
         createdAt: Date;
         updatedAt: Date;
